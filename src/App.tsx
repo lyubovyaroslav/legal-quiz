@@ -22,31 +22,6 @@ const questionBank = [
     options: ["Нет", "Да", "Иногда"],
     answer: 0,
   },
-
-  ...Array.from({ length: 97 }, (_, i) => ({
-    category: [
-      "Конституция",
-      "Интернет",
-      "Финансы",
-      "Права человека",
-      "Образование",
-      "Ответственность",
-      "Семья",
-      "Безопасность",
-      "Трудовое право",
-      "Потребители",
-    ][i % 10],
-
-    question: `Вопрос №${i + 4}: Правовая ситуация для школьников и студентов.`,
-
-    options: [
-      "Правильный вариант",
-      "Неправильный вариант",
-      "Другой вариант",
-    ],
-
-    answer: 0,
-  })),
 ];
 
 function App() {
@@ -59,10 +34,10 @@ function App() {
       setScore(score + 1);
     }
 
-    const next = currentQuestion + 1;
+    const nextQuestion = currentQuestion + 1;
 
-    if (next < questionBank.length) {
-      setCurrentQuestion(next);
+    if (nextQuestion < questionBank.length) {
+      setCurrentQuestion(nextQuestion);
     } else {
       setFinished(true);
     }
