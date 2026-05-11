@@ -1,255 +1,126 @@
-import { useState } from "react";
-import jsPDF from "jspdf";
+const questionBank = [
+  {
+    category: "Конституция",
+    question: "Какой документ является основным законом РФ?",
+    options: ["Конституция РФ", "Трудовой кодекс", "Уголовный кодекс"],
+    answer: 0,
+    explanation: "Конституция РФ — основной закон государства."
+  },
 
-export default function App() {
-  const questionBank = [
-    {
-      category: "Права человека",
-      question: "Имеет ли гражданин право на образование?",
-      options: ["Да", "Нет", "Только после 18 лет"],
-      answer: 0,
-      explanation:
-        "Право на образование закреплено Конституцией РФ."
-    },
+  {
+    category: "Права человека",
+    question: "Имеет ли гражданин право на свободу слова?",
+    options: ["Да", "Нет", "Только после 18 лет"],
+    answer: 0,
+    explanation: "Свобода слова гарантируется Конституцией РФ."
+  },
 
-    {
-      category: "Интернет и закон",
-      question: "Можно ли передавать пароль друзьям?",
-      options: ["Да", "Нет"],
-      answer: 1,
-      explanation:
-        "Пароль нельзя сообщать другим людям."
-    },
+  {
+    category: "Образование",
+    question: "Является ли школьное образование обязательным?",
+    options: ["Да", "Нет", "По желанию"],
+    answer: 0,
+    explanation: "Основное общее образование обязательно."
+  },
 
-    {
-      category: "Финансы",
-      question: "Можно ли вернуть некачественный товар?",
-      options: ["Да", "Нет"],
-      answer: 0,
-      explanation:
-        "Закон о защите прав потребителей разрешает возврат."
-    },
+  {
+    category: "Интернет",
+    question: "Можно ли публиковать чужие фотографии без разрешения?",
+    options: ["Нет", "Да", "Иногда"],
+    answer: 0,
+    explanation: "Публикация без согласия нарушает право на изображение."
+  },
 
-    {
-      category: "Ответственность",
-      question:
-        "С какого возраста наступает уголовная ответственность?",
-      options: ["14 лет", "16 лет", "18 лет"],
-      answer: 1,
-      explanation:
-        "По общему правилу уголовная ответственность наступает с 16 лет."
-    }
-  ];
+  {
+    category: "Финансы",
+    question: "Можно ли вернуть некачественный товар?",
+    options: ["Да", "Нет", "Только в день покупки"],
+    answer: 0,
+    explanation: "Закон защищает права потребителей."
+  },
 
-  const questions = Array.from(
-    { length: 100 },
-    (_, i) => ({
-      ...questionBank[i % questionBank.length]
-    })
-  );
+  {
+    category: "Трудовое право",
+    question: "С какого возраста можно официально работать?",
+    options: ["14 лет", "10 лет", "21 год"],
+    answer: 0,
+    explanation: "С согласия родителей работать можно с 14 лет."
+  },
 
-  const [current, setCurrent] = useState(0);
-  const [score, setScore] = useState(0);
-  const [selected, setSelected] =
-    useState<number | null>(null);
+  {
+    category: "Ответственность",
+    question: "С какого возраста наступает административная ответственность?",
+    options: ["16 лет", "12 лет", "21 год"],
+    answer: 0,
+    explanation: "Административная ответственность наступает с 16 лет."
+  },
 
-  const [finished, setFinished] =
-    useState(false);
+  {
+    category: "Безопасность",
+    question: "Можно ли сообщать PIN-код карты друзьям?",
+    options: ["Нет", "Да", "Иногда"],
+    answer: 0,
+    explanation: "PIN-код нельзя передавать другим людям."
+  },
 
-  const currentQuestion = questions[current];
+  {
+    category: "Полиция",
+    question: "Обязан ли гражданин предъявить документы полиции при законном требовании?",
+    options: ["Да", "Нет", "Только ночью"],
+    answer: 0,
+    explanation: "При наличии законных оснований документы предъявляются."
+  },
 
-  const handleAnswer = (index: number) => {
-    if (selected !== null) return;
+  {
+    category: "Права ребёнка",
+    question: "Имеет ли ребёнок право на защиту своих интересов?",
+    options: ["Да", "Нет", "Только после 18 лет"],
+    answer: 0,
+    explanation: "Права детей защищаются законом."
+  },
 
-    setSelected(index);
+  ...Array.from({ length: 90 }, (_, i) => ({
+    category: [
+      "Конституция",
+      "Интернет",
+      "Финансы",
+      "Образование",
+      "Ответственность",
+      "Семья",
+      "Безопасность",
+      "Права человека",
+      "Трудовое право",
+      "Потребители"
+    ][i % 10],
 
-    if (index === currentQuestion.answer) {
-      setScore(score + 1);
-    }
-  };
+    question: [
+      "Можно ли оскорблять людей в интернете?",
+      "Нужно ли соблюдать школьные правила?",
+      "Можно ли пользоваться чужой банковской картой?",
+      "Имеет ли человек право на отдых?",
+      "Запрещено ли распространение личных данных без согласия?",
+      "Можно ли подделывать документы?",
+      "Нужно ли оплачивать проезд в транспорте?",
+      "Является ли кража нарушением закона?",
+      "Можно ли курить в общественных местах?",
+      "Нужно ли соблюдать ПДД?"
+    ][i % 10],
 
-  const nextQuestion = () => {
-    if (current + 1 < questions.length) {
-      setCurrent(current + 1);
-      setSelected(null);
-    } else {
-      setFinished(true);
-    }
-  };
+    options: ["Да", "Нет", "Иногда"],
 
-  const generateCertificate = () => {
-    const doc = new jsPDF();
+    answer: [1, 0, 1, 0, 0, 1, 0, 0, 1, 0][i % 10],
 
-    doc.setFontSize(28);
-
-    doc.text(
-      "ДИПЛОМ",
-      105,
-      40,
-      {
-        align: "center"
-      }
-    );
-
-    doc.setFontSize(16);
-
-    doc.text(
-      "За успешное прохождение викторины",
-      105,
-      70,
-      {
-        align: "center"
-      }
-    );
-
-    doc.text(
-      "ПравоPRO",
-      105,
-      90,
-      {
-        align: "center"
-      }
-    );
-
-    doc.text(
-      "Результат: " + score + " из " + questions.length,
-      105,
-      120,
-      {
-        align: "center"
-      }
-    );
-
-    doc.save("diplom.pdf");
-  };
-
-  if (finished) {
-    return (
-      <div className="min-h-screen bg-slate-100 flex items-center justify-center p-6">
-        <div className="bg-white p-10 rounded-3xl shadow-2xl text-center max-w-xl w-full">
-
-          <h1 className="text-4xl font-bold mb-6 text-green-700">
-            Викторина завершена
-          </h1>
-
-          <p className="text-2xl mb-8">
-            Ваш результат:
-            {" "}
-            <span className="font-bold">
-              {score} / {questions.length}
-            </span>
-          </p>
-
-          <button
-            onClick={generateCertificate}
-            className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-2xl font-bold"
-          >
-            Скачать диплом PDF
-          </button>
-
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 to-cyan-100 flex items-center justify-center p-6">
-
-      <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-3xl w-full">
-
-        <div className="mb-6">
-
-          <h1 className="text-4xl font-bold text-blue-700 mb-2">
-            ПравоPRO
-          </h1>
-
-          <p className="text-gray-600">
-            Вопрос {current + 1} из {questions.length}
-          </p>
-
-        </div>
-
-        <div className="mb-8">
-
-          <div className="inline-block bg-blue-100 text-blue-700 px-4 py-2 rounded-full mb-4 font-semibold">
-            {currentQuestion.category}
-          </div>
-
-          <h2 className="text-2xl font-bold mb-6">
-            {currentQuestion.question}
-          </h2>
-
-          <div className="space-y-4">
-
-            {currentQuestion.options.map(
-              (option, index) => {
-
-                let styles =
-                  "border border-slate-300 hover:border-blue-500";
-
-                if (selected !== null) {
-
-                  if (
-                    index === currentQuestion.answer
-                  ) {
-                    styles =
-                      "bg-green-100 border-green-500";
-                  }
-
-                  else if (
-                    index === selected
-                  ) {
-                    styles =
-                      "bg-red-100 border-red-500";
-                  }
-                }
-
-                return (
-                  <button
-                    key={index}
-                    onClick={() =>
-                      handleAnswer(index)
-                    }
-                    className={`w-full text-left p-4 rounded-2xl transition font-semibold ${styles}`}
-                  >
-                    {option}
-                  </button>
-                );
-              }
-            )}
-
-          </div>
-
-        </div>
-
-        {selected !== null && (
-
-          <div className="bg-slate-100 rounded-2xl p-4 mb-6">
-
-            <h3 className="font-bold mb-2">
-              Объяснение
-            </h3>
-
-            <p>
-              {currentQuestion.explanation}
-            </p>
-
-          </div>
-
-        )}
-
-        <button
-          onClick={nextQuestion}
-          disabled={selected === null}
-          className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-6 py-3 rounded-2xl font-bold"
-        >
-          {current + 1 === questions.length
-            ? "Завершить"
-            : "Следующий вопрос"}
-        </button>
-
-      </div>
-
-    </div>
-  );
-}
+    explanation: [
+      "Оскорбления могут повлечь ответственность.",
+      "Школьные правила обязательны.",
+      "Использование чужой карты незаконно.",
+      "Право на отдых гарантируется законом.",
+      "Личные данные защищаются законом.",
+      "Подделка документов является преступлением.",
+      "Проезд должен быть оплачен.",
+      "Кража является правонарушением.",
+      "Курение в общественных местах ограничено.",
+      "Правила дорожного движения обязательны."
+    ][i % 10]
+  }))
+];
